@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom"
-import { useEffect, useState, type FormEvent } from "react"
+import React, { useEffect, useState } from "react"
 import { useGetAdByIdQuery, useUpdateAdMutation } from "@/entities/ad/api/adApi"
 import type {
   AdCategory,
@@ -97,7 +97,7 @@ export const AdEditPage = () => {
         paramsState,
       })
     )
-  }, [title, description, price, category, paramsState, id, isInitialized])
+  }, [title, description, price, category, paramsState, id])
 
   const getPayloadByCategory = (): UpdateAdPayload => {
     switch (category) {
@@ -128,7 +128,7 @@ export const AdEditPage = () => {
     }
   }
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (!id) return
