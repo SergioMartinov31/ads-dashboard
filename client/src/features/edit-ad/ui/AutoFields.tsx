@@ -1,3 +1,5 @@
+import { NumberInput, Select, Stack, TextInput } from "@mantine/core"
+
 import type {AutoItemParams} from "@/entities/ad/types";
 
 type Props = {
@@ -7,64 +9,70 @@ type Props = {
 
 export const AutoFields = ({ params, setParams }: Props) => {
   return (
-    <div>
-      <h3>Auto params</h3>
-
-      <input
-        placeholder="Brand"
+    <Stack maw={640}>
+      <TextInput
+        label="Бренд"
         value={params.brand || ''}
         onChange={(e) =>
           setParams({ ...params, brand: e.target.value })
         }
       />
 
-      <input
-        placeholder="Model"
+      <TextInput
+        label="Модель"
         value={params.model || ''}
         onChange={(e) =>
           setParams({ ...params, model: e.target.value })
         }
       />
 
-      <input
-        type="number"
-        placeholder="Year"
+      <NumberInput
+        label="Год выпуска"
         value={params.yearOfManufacture || ''}
-        onChange={(e) =>
+        onChange={(value) =>
           setParams({
             ...params,
-            yearOfManufacture: Number(e.target.value),
+            yearOfManufacture: typeof value === 'number' ? value : undefined,
           })
         }
       />
 
-      <select 
-        value={params.transmission || 'manual'}
-        onChange={(e) =>
-          setParams({ ...params, transmission: e.target.value as AutoItemParams['transmission'] })
+      <Select
+        label="Коробка передач"
+        value={params.transmission || null}
+        data={[
+          { value: 'automatic', label: 'Автомат' },
+          { value: 'manual', label: 'Механика' },
+        ]}
+        onChange={(value) =>
+          setParams({
+            ...params,
+            transmission: (value ?? undefined) as AutoItemParams['transmission'],
+          })
         }
-      >
-        <option value="automatic">Automatic</option>
-        <option value="manual">Manual</option>
-      </select>
+      />
     
-      <input
-        type="number"
-        placeholder="Mileage"
+      <NumberInput
+        label="Пробег"
         value={params.mileage || ''}
-        onChange={(e) =>
-          setParams({ ...params, mileage: Number(e.target.value) })
+        onChange={(value) =>
+          setParams({
+            ...params,
+            mileage: typeof value === 'number' ? value : undefined,
+          })
         }
       />
 
-      <input
-        type="number"
-        placeholder="Engine Power"
+      <NumberInput
+        label="Мощность двигателя"
         value={params.enginePower || ''}
-        onChange={(e) =>
-          setParams({ ...params, enginePower: Number(e.target.value) })
+        onChange={(value) =>
+          setParams({
+            ...params,
+            enginePower: typeof value === 'number' ? value : undefined,
+          })
         }
       />
-    </div>
+    </Stack>
   )
 }

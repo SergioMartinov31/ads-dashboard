@@ -1,0 +1,1 @@
+export {AdsSearchInput} from "@/features/ads-search/ui/AdsSearchInput"

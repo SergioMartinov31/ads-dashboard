@@ -1,3 +1,5 @@
+import { NumberInput, Select, Stack, TextInput } from "@mantine/core"
+
 import type {RealEstateItemParams} from "@/entities/ad/types";
 
 type Props = {
@@ -7,46 +9,52 @@ type Props = {
 
 export const RealEstateFields = ({ params, setParams }: Props) => {
   return (
-    <div>
-      <h3>Real estate params</h3>
-
-      <select
-        value={params.type || 'flat'}
-        onChange={(e) =>
-          setParams({ ...params, type: e.target.value as RealEstateItemParams['type'] })
+    <Stack maw={640}>
+      <Select
+        label="Тип"
+        value={params.type || null}
+        data={[
+          { value: 'flat', label: 'Квартира' },
+          { value: 'house', label: 'Дом' },
+          { value: 'room', label: 'Комната' },
+        ]}
+        onChange={(value) =>
+          setParams({
+            ...params,
+            type: (value ?? undefined) as RealEstateItemParams['type'],
+          })
         }
-      >
-        <option value="flat">Flat</option>
-        <option value="house">House</option>
-        <option value="room">Room</option>
-       </select>
+      />
 
-      <input
-        placeholder="Address"
+      <TextInput
+        label="Адрес"
         value={params.address || ''}
         onChange={(e) =>
           setParams({ ...params, address: e.target.value })
         }
       />
 
-      <input
-        type="number"
-        placeholder="Area (sq.m.)"
+      <NumberInput
+        label="Площадь, м²"
         value={params.area || ''}
-        onChange={(e) =>
-          setParams({ ...params, area: Number(e.target.value) })
+        onChange={(value) =>
+          setParams({
+            ...params,
+            area: typeof value === 'number' ? value : undefined,
+          })
         }
       />
 
-      <input
-        type="number"
-        placeholder="Floor"
+      <NumberInput
+        label="Этаж"
         value={params.floor || ''}
-        onChange={(e) =>
-          setParams({ ...params, floor: Number(e.target.value) })
+        onChange={(value) =>
+          setParams({
+            ...params,
+            floor: typeof value === 'number' ? value : undefined,
+          })
         }
       />
-
-    </div>
+    </Stack>
   )
 }

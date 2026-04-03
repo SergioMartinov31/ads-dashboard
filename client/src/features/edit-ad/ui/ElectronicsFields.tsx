@@ -1,3 +1,5 @@
+import { Select, Stack, TextInput } from "@mantine/core"
+
 import type {ElectronicsItemParams} from "@/entities/ad/types";
 
 type Props = {
@@ -7,54 +9,61 @@ type Props = {
 
 export const ElectronicsFields = ({ params, setParams }: Props) => {
   return (
-    <div>
-      <h3>Electronics params</h3>
-
-      <select
-        value={params.type || 'phone'}
-        onChange={(e) =>
-          setParams({ ...params, type: e.target.value as ElectronicsItemParams['type'] })
+    <Stack maw={640}>
+      <Select
+        label="Тип"
+        value={params.type || null}
+        data={[
+          { value: 'phone', label: 'Телефон' },
+          { value: 'laptop', label: 'Ноутбук' },
+          { value: 'misc', label: 'Другое' },
+        ]}
+        onChange={(value) =>
+          setParams({
+            ...params,
+            type: (value ?? undefined) as ElectronicsItemParams['type'],
+          })
         }
-      >
-        <option value="phone">Phone</option>
-        <option value="laptop">Laptop</option>
-        <option value="misc">Misc</option>
-      </select>
+      />
 
-      <input
-        placeholder="Brand"
+      <TextInput
+        label="Бренд"
         value={params.brand || ''}
         onChange={(e) =>
           setParams({ ...params, brand: e.target.value })
         }
       />
 
-      <input
-        placeholder="Model"
+      <TextInput
+        label="Модель"
         value={params.model || ''}
         onChange={(e) =>
           setParams({ ...params, model: e.target.value })
         }
       />
 
-      <select
-        value={params.condition || 'used'}
-        onChange={(e) =>
-          setParams({ ...params, condition: e.target.value as ElectronicsItemParams['condition'] })
-        }
-      >
-        <option value="new">New</option>
-        <option value="used">Used</option>
-      </select>
-
-      <input
-        placeholder="Color"
+      <TextInput
+        label="Цвет"
         value={params.color || ''}
         onChange={(e) =>
           setParams({ ...params, color: e.target.value })
         }
       />
 
-    </div>
+      <Select
+        label="Состояние"
+        value={params.condition || null}
+        data={[
+          { value: 'new', label: 'Новое' },
+          { value: 'used', label: 'Б/у' },
+        ]}
+        onChange={(value) =>
+          setParams({
+            ...params,
+            condition: (value ?? undefined) as ElectronicsItemParams['condition'],
+          })
+        }
+      />
+    </Stack>
   )
 }

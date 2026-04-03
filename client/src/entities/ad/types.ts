@@ -72,6 +72,8 @@ export type AdsListResponse = {
 // ответ сервера при запросе деталей объявления Get /items/:id
 export type AdDetailsResponse = Ad & {
   needsRevision: boolean
+  createdAt?: string
+  updatedAt?: string
 }
 
 // тело запроса к get items/:id
@@ -85,7 +87,7 @@ export type AdsListParams = {
   limit?: number
   skip?: number
   needsRevision?: boolean
-  categories?: AdCategory[] // ⚠️ нужно будет join(',') перед отправкой
+  categories?: string
   sortColumn?: 'title' | 'createdAt'
   sortDirection?: 'asc' | 'desc'
 }
