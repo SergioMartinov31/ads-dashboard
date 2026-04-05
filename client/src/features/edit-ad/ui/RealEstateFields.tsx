@@ -24,13 +24,6 @@ export const RealEstateFields = ({ params, setParams }: Props) => {
             type: (value ?? undefined) as RealEstateItemParams['type'],
           })
         }
-        rightSection={
-          params.type && (
-            <ActionIcon onClick={() => setParams({ ...params, type: undefined })} variant="subtle" color="gray">
-              <IconX size={16} />
-            </ActionIcon>
-          )
-        }
       />
 
       <TextInput

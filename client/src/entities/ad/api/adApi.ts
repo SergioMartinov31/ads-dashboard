@@ -25,18 +25,6 @@ export const adApi = createApi({
         params,
       }),
 
-      transformResponse: (response: AdsListResponse, _, arg) => {
-      const skip = arg?.skip ?? 0
-
-      return {
-        ...response,
-        items: response.items.map((item, index) => ({
-          ...item,
-          id: skip + index + 1,
-        })),
-      }
-      },
-
       providesTags: ['Ad'],
     }),
 

@@ -24,13 +24,6 @@ export const ElectronicsFields = ({ params, setParams }: Props) => {
             type: (value ?? undefined) as ElectronicsItemParams['type'],
           })
         }
-        rightSection={
-          params.type && (
-            <ActionIcon onClick={() => setParams({ ...params, type: undefined })} variant="subtle" color="gray">
-              <IconX size={16} />
-            </ActionIcon>
-          )
-        }
       />
 
       <TextInput
@@ -84,13 +77,6 @@ export const ElectronicsFields = ({ params, setParams }: Props) => {
             ...params,
             condition: (value ?? undefined) as ElectronicsItemParams['condition'],
           })
-        }
-        rightSection={
-          params.condition && (
-            <ActionIcon onClick={() => setParams({ ...params, condition: undefined })} variant="subtle" color="gray">
-              <IconX size={16} />
-            </ActionIcon>
-          )
         }
       />
     </Stack>

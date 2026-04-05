@@ -61,7 +61,7 @@ export const AdsListPage = () => {
           onNeedsRevisionChange={setOnlyNeedsRevision}
         />
         <div style={{ flex: 1 }}>
-          <AdsList data={data} view={view} isLoading={isLoading} isFetching={isFetching}/>
+          <AdsList data={data} view={view} isLoading={isLoading} isFetching={isFetching} page={page} limit={limit}/>
 
           <Pagination
             mt="md"

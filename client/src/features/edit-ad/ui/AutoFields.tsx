@@ -67,13 +67,6 @@ export const AutoFields = ({ params, setParams }: Props) => {
             transmission: (value ?? undefined) as AutoItemParams['transmission'],
           })
         }
-        rightSection={
-          params.transmission && (
-            <ActionIcon onClick={() => setParams({ ...params, transmission: undefined })} variant="subtle" color="gray">
-              <IconX size={16} />
-            </ActionIcon>
-          )
-        }
       />
     
       <NumberInput

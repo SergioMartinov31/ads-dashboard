@@ -15,9 +15,11 @@ type AdsListProps = {
   view: 'grid' | 'list'
   isLoading?: boolean
   isFetching?: boolean
+  page: number 
+  limit: number
 }
 
-export const AdsList = ( {data, view, isLoading, isFetching} : AdsListProps) => {
+export const AdsList = ( {data, view, isLoading, isFetching, page, limit} : AdsListProps) => {
   if (isLoading) {
     return (
       <Container className='cards-container' size="sm">
@@ -51,9 +53,9 @@ export const AdsList = ( {data, view, isLoading, isFetching} : AdsListProps) => 
       )}
       <div style={{ opacity: isFetching ? 0.6 : 1, transition: '0.2s' }}>
         <SimpleGrid className='cards-layout' cols={view === 'grid' ? 5 : 1} spacing="md">
-          {data?.items.map((ad) => (
+          {data?.items.map((ad, index) => (
             <Card
-              key={ad.id}
+              key={`${ad.id}`}
               withBorder
               shadow="sm"
               radius="md"
@@ -71,7 +73,7 @@ export const AdsList = ( {data, view, isLoading, isFetching} : AdsListProps) => 
               </Card.Section>
 
               <Text size="sm" c="dimmed">
-                  {categoryMap[ad.category]}
+                {categoryMap[ad.category]}
               </Text>
               <Text fw={500} size="lg" mb={5}>
                 {ad.title}
