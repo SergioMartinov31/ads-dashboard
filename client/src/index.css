@@ -64,7 +64,6 @@
 body {
   margin: 0;
   padding: 0 32px;
-  background-color: var(--main-bg);
 }
 
 h1,

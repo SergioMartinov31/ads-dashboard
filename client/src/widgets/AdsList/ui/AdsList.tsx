@@ -60,7 +60,7 @@ export const AdsList = ( {data, view, isLoading, isFetching} : AdsListProps) => 
               padding="lg"
               component={Link}
               to={`/ads/${ad.id}`}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
             >
               <Card.Section>
                 <Image
@@ -81,7 +81,7 @@ export const AdsList = ( {data, view, isLoading, isFetching} : AdsListProps) => 
                 {ad.price} ₽
               </Text>
               {ad.needsRevision && (
-                  <Badge color="orange" variant="light">
+                  <Badge color="orange" variant="light" style={{ alignSelf: 'flex-start' }}>
                     Требует доработки
                   </Badge>
               )}

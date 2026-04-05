@@ -13,7 +13,10 @@ import {
   Divider,
   Group,
   Text,
+  Notification,
+  ActionIcon,
 } from "@mantine/core"
+import { IconCheck, IconX, IconTrash } from "@tabler/icons-react"
 
 import type {
   AdCategory,
@@ -26,6 +29,8 @@ import type {
 import { AutoFields } from "@/features/edit-ad/ui/AutoFields"
 import { RealEstateFields } from "@/features/edit-ad/ui/RealEstateFields"
 import { ElectronicsFields } from "@/features/edit-ad/ui/ElectronicsFields"
+import { AiDescriptionButton } from "@/features/ai/ui/AiDescriptionButton"
+import { AiPriceButton } from "@/features/ai/ui/AiPriceButton"
 
 type ParamsState = {
   auto: AutoItemParams
@@ -36,6 +41,7 @@ type ParamsState = {
 export const AdEditPage = () => {
   const [isDraftLoaded, setIsDraftLoaded] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -61,6 +67,12 @@ export const AdEditPage = () => {
       ...prev,
       [category]: newParams,
     }))
+  }
+
+  const isFormValid = () => {
+    if (!title.trim()) return false
+    if (price === '' || price === null || price <= 0) return false
+    return true
   }
 
   useEffect(() => {
@@ -115,16 +127,39 @@ export const AdEditPage = () => {
     )
   }, [title, description, price, category, paramsState, id])
 
-  const getPayloadByCategory = (): UpdateAdPayload => {
-    switch (category) {
-      case 'auto':
-        return { category, title, description, price: Number(price), params: paramsState.auto }
-      case 'real_estate':
-        return { category, title, description, price: Number(price), params: paramsState.real_estate }
-      case 'electronics':
-        return { category, title, description, price: Number(price), params: paramsState.electronics }
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+      return () => clearTimeout(timer)
     }
+  }, [notification])
+
+
+  const cleanParams = (params: Record<string, any>) => {
+  return Object.fromEntries(
+    Object.entries(params).filter(
+      ([_, value]) =>
+        value !== "" &&
+        value !== null &&
+        value !== undefined
+    )
+  )
+}
+
+  const getPayloadByCategory = (): UpdateAdPayload => {
+  const cleanedParams = cleanParams(paramsState[category])
+
+  switch (category) {
+    case 'auto':
+      return { category, title, description, price: Number(price), params: cleanedParams }
+    case 'real_estate':
+      return { category, title, description, price: Number(price), params: cleanedParams }
+    case 'electronics':
+      return { category, title, description, price: Number(price), params: cleanedParams }
   }
+}
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -135,13 +170,27 @@ export const AdEditPage = () => {
         id: Number(id),
         body: getPayloadByCategory(),
       }).unwrap()
+      
+      setNotification({
+        type: 'success',
+        message: 'Изменения сохранены'
+      })
+      
+      localStorage.removeItem(`ad-draft-${id}`)
+      
+      setTimeout(() => {
+        navigate(`/ads/${id}`)
+      }, 1000)
+      
     } catch (e) {
-      return
+      setNotification({
+        type: 'error',
+        message: 'При попытке сохранить изменения произошла ошибка. Попробуйте ещё раз или зайдите позже.'
+      })
     }
-
-    localStorage.removeItem(`ad-draft-${id}`)
-    navigate(`/ads/${id}`)
   }
+
+
 
   const renderFields = () => {
     switch (category) {
@@ -159,9 +208,23 @@ export const AdEditPage = () => {
 
   const isTitleError = !title
   const isPriceError = !price
+  const isSaveDisabled = !isFormValid() || isSaving
+  const isDescriptionEmpty = !description
 
   return (
-    <Container size="md" mt="lg" style={{marginInline: 0, maxWidth: '100%'}}>
+    <Container size="md" mt="lg" style={{marginInline: 0, maxWidth: '100%', backgroundColor: '#FFFFFF'} }>
+      {notification && (
+        <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 1000 }}>
+          <Notification
+            icon={notification.type === 'success' ? <IconCheck size={18} /> : <IconX size={18} />}
+            color={notification.type === 'success' ? 'teal' : 'red'}
+            title={notification.type === 'success' ? 'Изменения сохранены' : 'Ошибка сохранения'}
+            onClose={() => setNotification(null)}
+          >
+            {notification.message}
+          </Notification>
+        </div>
+      )}
 
       <Card shadow="sm" padding="lg" radius="lg" withBorder>
         <Title order={2} mb="md">
@@ -197,6 +260,13 @@ export const AdEditPage = () => {
                 value={title}
                 onChange={(e) => setTitle(e.currentTarget.value)}
                 error={isTitleError && "Обязательное поле"}
+                rightSection={
+                  title && (
+                    <ActionIcon onClick={() => setTitle('')} variant="subtle" color="gray">
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  )
+                }
               />
 
               <div />
@@ -209,11 +279,20 @@ export const AdEditPage = () => {
                 value={price}
                 onChange={(val) => setPrice(typeof val === 'number' ? val : '')}
                 error={isPriceError && "Обязательное поле"}
+                rightSection={
+                  price !== '' && price !== null && (
+                    <ActionIcon onClick={() => setPrice('')} variant="subtle" color="gray">
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  )
+                }
               />
 
-              <Button variant="light" color="orange" style={{ alignSelf: 'end', justifySelf: 'start' }}>
-                💡 Узнать цену
-              </Button>
+              <AiPriceButton
+                title={title}
+                params={currentParams}
+                onApply={(price) => setPrice(price)}
+              />
 
               <Divider style={{ gridColumn: '1 / -1' }} />
 
@@ -232,20 +311,35 @@ export const AdEditPage = () => {
                 onChange={(e) => setDescription(e.currentTarget.value)}
                 minRows={4}
                 style={{ gridColumn: '1 / -1' }}
+                styles={{
+                  input: {
+                    borderColor: isDescriptionEmpty ? '#FFA940' : undefined,
+                  },
+                }}
+                rightSection={
+                  description && (
+                    <ActionIcon onClick={() => setDescription('')} variant="subtle" color="gray" style={{ marginTop: 8 }}>
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  )
+                }
               />
 
-              <Button
-                variant="light"
-                color="orange"
-                style={{ gridColumn: '1 / 2', width: 'fit-content' }}
-              >
-                💡 Улучшить описание
-              </Button>
+              <AiDescriptionButton
+                title={title}
+                description={description}
+                params={currentParams}
+                onApply={(text) => setDescription(text)}
+              />
 
               <div />
 
               <Group mt="md" style={{ gridColumn: '1 / 2' }}>
-                <Button type="submit" loading={isSaving}>
+                <Button 
+                  type="submit" 
+                  loading={isSaving}
+                  disabled={isSaveDisabled}
+                >
                   Сохранить
                 </Button>
 
@@ -256,6 +350,12 @@ export const AdEditPage = () => {
                   Отменить
                 </Button>
               </Group>
+              
+              {isSaveDisabled && !isSaving && (
+                <Text size="xs" c="dimmed" style={{ gridColumn: '1 / 2' }}>
+                  * Заполните название и цену для сохранения
+                </Text>
+              )}
             </div>
           </form>
       </Card>

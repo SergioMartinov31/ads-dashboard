@@ -28,7 +28,7 @@ export const FiltersSidebar = ({
   }
 
   return (
-    <div>
+    <div style={{padding: '16px', borderRadius: '8px'}}>
       <Title order={4} mb="sm">
         Фильтры
       </Title>

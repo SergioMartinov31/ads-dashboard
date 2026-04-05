@@ -1,6 +1,6 @@
-import { NumberInput, Select, Stack, TextInput } from "@mantine/core"
-
-import type {RealEstateItemParams} from "@/entities/ad/types";
+import { NumberInput, Select, Stack, TextInput, ActionIcon } from "@mantine/core"
+import { IconX } from "@tabler/icons-react"
+import type { RealEstateItemParams } from "@/entities/ad/types";
 
 type Props = {
   params: RealEstateItemParams
@@ -24,13 +24,25 @@ export const RealEstateFields = ({ params, setParams }: Props) => {
             type: (value ?? undefined) as RealEstateItemParams['type'],
           })
         }
+        rightSection={
+          params.type && (
+            <ActionIcon onClick={() => setParams({ ...params, type: undefined })} variant="subtle" color="gray">
+              <IconX size={16} />
+            </ActionIcon>
+          )
+        }
       />
 
       <TextInput
         label="Адрес"
         value={params.address || ''}
-        onChange={(e) =>
-          setParams({ ...params, address: e.target.value })
+        onChange={(e) => setParams({ ...params, address: e.target.value })}
+        rightSection={
+          params.address && (
+            <ActionIcon onClick={() => setParams({ ...params, address: '' })} variant="subtle" color="gray">
+              <IconX size={16} />
+            </ActionIcon>
+          )
         }
       />
 
@@ -43,6 +55,13 @@ export const RealEstateFields = ({ params, setParams }: Props) => {
             area: typeof value === 'number' ? value : undefined,
           })
         }
+        rightSection={
+          params.area && (
+            <ActionIcon onClick={() => setParams({ ...params, area: undefined })} variant="subtle" color="gray">
+              <IconX size={16} />
+            </ActionIcon>
+          )
+        }
       />
 
       <NumberInput
@@ -53,6 +72,13 @@ export const RealEstateFields = ({ params, setParams }: Props) => {
             ...params,
             floor: typeof value === 'number' ? value : undefined,
           })
+        }
+        rightSection={
+          params.floor && (
+            <ActionIcon onClick={() => setParams({ ...params, floor: undefined })} variant="subtle" color="gray">
+              <IconX size={16} />
+            </ActionIcon>
+          )
         }
       />
     </Stack>
